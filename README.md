@@ -50,6 +50,10 @@ Mosaic is the invisible organizer for your WhatsApp life. It reads your chats wi
 curl -fsSL https://raw.githubusercontent.com/sameer-hoda/mosaic/main/install.sh | bash
 ```
 
+That's it. The installer handles everything.
+
+👉 **New to computers?** Read the [Beginner Setup Guide](SETUP.md) — it explains every step in plain language, from opening Terminal to connecting WhatsApp.
+
 That's it. The installer will:
 1. **Clone** the repo (if needed)
 2. **Check** prerequisites and tell you how to install what's missing
