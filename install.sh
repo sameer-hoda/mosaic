@@ -82,6 +82,25 @@ echo -e "${BOLD}[1/4]${NC} Checking prerequisites..."
 echo ""
 
 check_tool python3
+
+# ── Python version check (need 3.10+ for modern f-string syntax) ─────
+PY_VER=$(python3 -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")')
+PY_MAJOR=$(echo "$PY_VER" | cut -d. -f1)
+PY_MINOR=$(echo "$PY_VER" | cut -d. -f2)
+if [ "$PY_MAJOR" -lt 3 ] || ([ "$PY_MAJOR" -eq 3 ] && [ "$PY_MINOR" -lt 10 ]); then
+  fail "python3 — found $PY_VER but need 3.10+"
+  echo ""
+  if [[ "$OSTYPE" == "darwin"* ]]; then
+    echo "  Install a newer Python:"
+    echo "    brew install python@3.12"
+    echo ""
+    echo "  Then re-run this script."
+  else
+    echo "  Install Python 3.10+ and re-run this script."
+  fi
+  exit 1
+fi
+
 check_tool node
 check_tool npm
 check_tool go

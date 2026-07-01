@@ -271,6 +271,11 @@ formality, and emoji usage when writing your nudge):
 
 """
 
+    progress_extra = "- Latest progress: " + latest_progress if latest_progress else ""
+    blocker_extra = ""
+    if blockers_text:
+        blocker_extra = "- Current blockers:\n" + blockers_text
+
     prompt = f"""{identity_block}{persona_block}{group_tone_block}{evidence_block}TASK:
 - Title: {task.get('title', '')}
 - Group: {task.get('group_name', '')}
@@ -278,8 +283,8 @@ formality, and emoji usage when writing your nudge):
 - Status: {task.get('status', 'active')}
 - Importance: {task.get('importance', 3)}/5
 - Context: {task.get('context', '')}
-{"- Latest progress: " + latest_progress if latest_progress else ""}
-{"- Current blockers:\n" + blockers_text if blockers_text else ""}
+{progress_extra}
+{blocker_extra}
 
 Generate 3 WhatsApp nudge messages to send to the group/person. Write them as YOU ({user_name}) speaking in first person.
 
