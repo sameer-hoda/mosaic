@@ -83,23 +83,35 @@ echo ""
 
 check_tool python3
 
-# ── Python version check (need 3.10+ for modern f-string syntax) ─────
-PY_VER=$(python3 -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")')
-PY_MAJOR=$(echo "$PY_VER" | cut -d. -f1)
-PY_MINOR=$(echo "$PY_VER" | cut -d. -f2)
-if [ "$PY_MAJOR" -lt 3 ] || ([ "$PY_MAJOR" -eq 3 ] && [ "$PY_MINOR" -lt 10 ]); then
-  fail "python3 — found $PY_VER but need 3.10+"
+# ── Find the best Python (prefer versioned Homebrew installs) ────────
+BEST_PYTHON=""
+for candidate in python3.12 python3.13 python3.11 python3.10 python3; do
+  if command -v "$candidate" &>/dev/null; then
+    candidate_ver=$("$candidate" -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")')
+    candidate_major=$(echo "$candidate_ver" | cut -d. -f1)
+    candidate_minor=$(echo "$candidate_ver" | cut -d. -f2)
+    if [ "$candidate_major" -gt 3 ] || ([ "$candidate_major" -eq 3 ] && [ "$candidate_minor" -ge 10 ]); then
+      BEST_PYTHON="$candidate"
+      info "Found Python $candidate_ver → using $candidate"
+      break
+    fi
+  fi
+done
+
+if [ -z "$BEST_PYTHON" ]; then
+  fail "No Python 3.10+ found. python3 reports Python $(python3 -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")')"
   echo ""
   if [[ "$OSTYPE" == "darwin"* ]]; then
-    echo "  Install a newer Python:"
-    echo "    brew install python@3.12"
-    echo ""
-    echo "  Then re-run this script."
+    echo "  Install: brew install python@3.12"
+    echo "  Then:    re-run this script"
   else
     echo "  Install Python 3.10+ and re-run this script."
   fi
   exit 1
 fi
+
+# Use the best Python for all later commands
+PY3="$BEST_PYTHON"
 
 check_tool node
 check_tool npm
@@ -158,7 +170,7 @@ if [ -f "$PYTHON_VENV" ]; then
   ok "Python venv already exists"
 else
   step "Creating Python virtual environment..."
-  python3 -m venv "$PROJECT_DIR/taskdog-backend/venv"
+  $PY3 -m venv "$PROJECT_DIR/taskdog-backend/venv"
   ok "venv created"
 
   step "Installing Python dependencies (Flask, Gemini SDK, etc.)..."
