@@ -1,0 +1,21 @@
+# Ignore Electron build output
+dist-electron/
+node_modules/
+
+# Ignore user data (never committed)
+*.db
+*.db-wal
+*.db-shm
+store/
+
+# Ignore Python venv
+venv/
+
+# Ignore env files with secrets
+.env
+
+# macOS
+.DS_Store
+
+# Logs
+*.log

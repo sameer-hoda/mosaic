@@ -1,0 +1,77 @@
+{
+  "name": "taskdog",
+  "version": "2.0.0",
+  "description": "TaskDog v2 — WhatsApp-based task tracker with Gemini AI. Electron desktop app.",
+  "main": "main.js",
+  "author": "TaskDog",
+  "license": "MIT",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron .",
+    "build": "electron-builder",
+    "build:mac": "electron-builder --mac",
+    "build:dmg": "electron-builder --mac dmg",
+    "postinstall": "electron-builder install-app-deps"
+  },
+  "devDependencies": {
+    "electron": "^33.0.0",
+    "electron-builder": "^25.0.0"
+  },
+  "build": {
+    "appId": "com.taskdog.desktop",
+    "productName": "TaskDog",
+    "copyright": "Copyright 2026 TaskDog",
+    "directories": {
+      "output": "dist-electron"
+    },
+    "asar": false,
+    "files": [
+      "main.js",
+      "preload.js",
+      "backend/**/*",
+      "bridge/**/*",
+      "assets/**/*",
+      "!backend/__pycache__/**",
+      "!backend/models/__pycache__/**",
+      "!backend/routes/__pycache__/**",
+      "!backend/utils/__pycache__/**",
+      "!backend/static/**/*.map",
+      "!backend/*.db",
+      "!backend/*.db-*",
+      "!backend/.env",
+      "!backend/.env.*",
+      "!backend/.env.bak*",
+      "!backend/server.log",
+      "!frontend-src/**",
+      "!node_modules/.cache/**"
+    ],
+    "mac": {
+      "category": "public.app-category.productivity",
+      "target": [
+        {
+          "target": "dmg",
+          "arch": ["x64", "arm64"]
+        }
+      ],
+      "icon": "assets/icon.icns",
+      "hardenedRuntime": true,
+      "gatekeeperAssess": false,
+      "entitlements": "entitlements.mac.plist",
+      "extendInfo": {
+        "NSMicrophoneUsageDescription": "TaskDog needs microphone access for voice message playback.",
+        "NSCameraUsageDescription": "TaskDog needs camera access to scan WhatsApp QR codes."
+      }
+    },
+    "dmg": {
+      "title": "TaskDog Installer",
+      "contents": [
+        { "x": 130, "y": 220 },
+        { "x": 410, "y": 220, "type": "link", "path": "/Applications" }
+      ],
+      "window": {
+        "width": 540,
+        "height": 420
+      }
+    }
+  }
+}

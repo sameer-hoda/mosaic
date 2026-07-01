@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TaskDog v2 - Architectural Precision Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&amp;family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&amp;family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-highest": "#353437",
+                        "on-primary-fixed-variant": "#5a00c6",
+                        "on-tertiary-fixed": "#002113",
+                        "on-background": "#e5e1e4",
+                        "primary-fixed": "#eaddff",
+                        "on-primary": "#3f008e",
+                        "on-secondary": "#1000a9",
+                        "on-surface-variant": "#ccc3d8",
+                        "on-tertiary-container": "#76ffc2",
+                        "secondary-fixed": "#e1e0ff",
+                        "secondary": "#c0c1ff",
+                        "error-container": "#93000a",
+                        "on-secondary-fixed": "#07006c",
+                        "surface": "#131315",
+                        "tertiary": "#4edea3",
+                        "on-error-container": "#ffdad6",
+                        "outline-variant": "#4a4455",
+                        "inverse-primary": "#732ee4",
+                        "on-surface": "#e5e1e4",
+                        "primary": "#d2bbff",
+                        "secondary-fixed-dim": "#c0c1ff",
+                        "inverse-surface": "#e5e1e4",
+                        "on-tertiary-fixed-variant": "#005236",
+                        "surface-container": "#201f22",
+                        "error": "#ffb4ab",
+                        "surface-container-lowest": "#0e0e10",
+                        "surface-tint": "#d2bbff",
+                        "on-tertiary": "#003824",
+                        "on-primary-fixed": "#25005a",
+                        "tertiary-fixed": "#6ffbbe",
+                        "on-secondary-fixed-variant": "#2f2ebe",
+                        "surface-dim": "#131315",
+                        "primary-fixed-dim": "#d2bbff",
+                        "inverse-on-surface": "#313032",
+                        "surface-container-high": "#2a2a2c",
+                        "outline": "#958da1",
+                        "background": "#131315",
+                        "on-secondary-container": "#b0b2ff",
+                        "surface-bright": "#39393b",
+                        "tertiary-fixed-dim": "#4edea3",
+                        "on-primary-container": "#ede0ff",
+                        "surface-variant": "#353437",
+                        "tertiary-container": "#007650",
+                        "on-error": "#690005",
+                        "secondary-container": "#3131c0",
+                        "primary-container": "#7c3aed",
+                        "surface-container-low": "#1c1b1d"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "unit": "4px",
+                        "margin-desktop": "32px",
+                        "lg": "24px",
+                        "gutter": "16px",
+                        "margin-mobile": "16px",
+                        "xl": "32px",
+                        "sm": "8px",
+                        "md": "16px",
+                        "xs": "4px"
+                    },
+                    "fontFamily": {
+                        "display-lg": ["Geist"],
+                        "headline-md": ["Geist"],
+                        "body-bold": ["Inter"],
+                        "headline-lg-mobile": ["Geist"],
+                        "body-base": ["Inter"],
+                        "stat-lg": ["Geist"],
+                        "label-caps": ["JetBrains Mono"]
+                    },
+                    "fontSize": {
+                        "display-lg": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.03em", "fontWeight": "700"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                        "body-bold": ["14px", {"lineHeight": "22px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "headline-lg-mobile": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-base": ["14px", {"lineHeight": "22px", "letterSpacing": "-0.01em", "fontWeight": "400"}],
+                        "stat-lg": ["28px", {"lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                        "label-caps": ["11px", {"lineHeight": "14px", "letterSpacing": "0.08em", "fontWeight": "600"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            background-color: #09090b; /* Base Layer */
+            color: theme('colors.on-surface');
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        .layer-base { background-color: #09090b; }
+        .layer-surface { background-color: #121214; }
+        .layer-overlay { background-color: rgba(24, 24, 27, 0.85); backdrop-filter: blur(16px); }
+        
+        .border-structural { border-color: #1f2024; }
+        .border-interactive:hover { border-color: #2e3036; }
+        
+        .glass-panel {
+            background-color: rgba(18, 18, 20, 0.85);
+            backdrop-filter: blur(16px);
+            border: 1px solid #1f2024;
+        }
+
+        .task-row {
+            transition: all 0.2s ease;
+        }
+        .task-row:hover {
+            background-color: #121214;
+            border-color: #2e3036;
+        }
+        .task-row .deep-dive-btn {
+            opacity: 0;
+            transform: translateX(10px);
+            transition: all 0.2s ease;
+        }
+        .task-row:hover .deep-dive-btn {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .imp-5 {
+            box-shadow: 0 0 15px rgba(124, 58, 237, 0.15) inset;
+            border-left: 2px solid theme('colors.primary-container');
+        }
+        
+        @keyframes pulse-ring {
+            0% { transform: scale(0.8); opacity: 0.5; }
+            100% { transform: scale(2); opacity: 0; }
+        }
+        .pulse-dot::before {
+            content: '';
+            position: absolute;
+            inset: -4px;
+            border-radius: 50%;
+            border: 1px solid theme('colors.primary-container');
+            animation: pulse-ring 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+        }
+
+        /* Custom Scrollbar for sleekness */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #2e3036;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #4a4455;
+        }
+    </style>
+</head>
+<body class="flex h-screen overflow-hidden selection:bg-primary-container selection:text-on-primary-container">
+<!-- Main Content Wrapper -->
+<div class="flex-1 w-full flex flex-col h-screen relative">
+<!-- TopAppBar -->
+<header class="bg-surface/80 dark:bg-surface/80 backdrop-blur-xl fixed top-0 left-0 w-full h-16 border-b border-outline-variant dark:border-outline-variant flex items-center justify-between px-xl z-40">
+<div class="flex items-center gap-lg">
+<!-- Branding brought over from nav -->
+<div class="flex items-center gap-sm mr-md">
+<img alt="TaskDog Logo" class="w-8 h-8 rounded-DEFAULT" data-alt="A sleek, minimalist geometric logo representing a stylized dog profile in stark white against a pure black background. The design is engineered and precise, fitting for a modern high-performance SaaS platform. High-contrast, sharp lines, dark mode aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuChhYU4vR1L1c_C4xlW1-xJWbHbU1RrJF2Bel6fm8xlGUNZPqKMxQK1lR7nLN_Fg5VEN_nGnEpza5Bt1ISNv6X-kYtgfYBYA4752_0eQT1zUPys-s6E5_qMyGudnyDhU91YYegcbUWdlREZeP9udZlbb59i6-QxWSi37b1EmV2AbpX7yD-Q7BLrlgB3evA6euyJqK8lXiQhcQdJBDWZcBvCQ-mVXNPFZ8Bgxv1Q7qbqrF55K8bELhfzsDMkRrpVJrziMkkQsIRViTY"/>
+<h1 class="font-display-lg text-display-lg text-primary dark:text-primary tracking-tighter text-[20px] leading-tight hidden sm:block">TaskDog</h1>
+</div>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-on-surface-variant text-[18px]">search</span>
+<input class="bg-[#0f0f11] border border-[#1f2024] rounded-DEFAULT py-xs pl-xl pr-sm text-on-surface font-body-base text-[13px] w-64 focus:outline-none focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-all" placeholder="Search tasks..." type="text"/>
+<div class="absolute right-sm top-1/2 -translate-y-1/2 flex items-center gap-xs">
+<kbd class="font-label-caps text-label-caps text-on-surface-variant bg-surface-container px-xs rounded-sm border border-outline-variant">⌘</kbd>
+<kbd class="font-label-caps text-label-caps text-on-surface-variant bg-surface-container px-xs rounded-sm border border-outline-variant">K</kbd>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<button class="w-auto bg-primary-container text-on-primary-container font-body-bold text-[13px] px-sm py-xs rounded-DEFAULT border border-white/20 hover:scale-98 transition-transform duration-100 flex items-center justify-center gap-xs">
+<span class="material-symbols-outlined text-[16px]">add</span>
+                    New Task
+                </button>
+<div class="h-4 w-px bg-[#1f2024] mx-xs"></div>
+<button class="text-on-surface-variant hover:text-on-surface font-body-base text-[13px] px-sm py-xs border border-transparent hover:border-[#1f2024] rounded-DEFAULT transition-all">Discover</button>
+<button class="text-on-surface-variant hover:text-on-surface font-body-base text-[13px] px-sm py-xs border border-transparent hover:border-[#1f2024] rounded-DEFAULT transition-all flex items-center gap-xs">
+<span class="material-symbols-outlined text-[16px]">refresh</span>
+                    Refresh
+                </button>
+<div class="h-4 w-px bg-[#1f2024] mx-sm"></div>
+<button class="text-on-surface-variant hover:text-on-surface transition-colors p-xs rounded-DEFAULT hover:bg-surface-container-highest">
+<span class="material-symbols-outlined text-[20px]">notifications</span>
+</button>
+<button class="text-on-surface-variant hover:text-on-surface transition-colors p-xs rounded-DEFAULT hover:bg-surface-container-highest">
+<span class="material-symbols-outlined text-[20px]">help_outline</span>
+</button>
+<img alt="User Profile" class="w-8 h-8 rounded-full border border-outline-variant ml-sm" data-alt="A small, circular avatar image showing a professional headshot of a software engineer. Dramatic lighting, deep shadows, high-quality, professional corporate aesthetic in a dark environment." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCr5l67gisYDgM4ZXgZ4sIh7Y0dWl-wcGAWu0ApFbrX9CSM8z0GRApf0tleuuQ3JQDRM_x87IyS5wGJZ1zwZ-0KQ2Qsn7vAUyhjXD6all67RLvrNSqeKOXOu1yw3eXNic2Q5bAHEu_iCGhlv5ujitkLVF-wMBOhFZrOQkaNSp9eA6GhA4f9U7zStsZyjJPVUL2LUmkqsurWLo0BKkh0WSUu2d_Ugt5y4THf3JF3P9SYtprOGnJUR-lQ4S2Eifd8fVZZVOv6u6cykAQ"/>
+</div>
+</header>
+<!-- Canvas -->
+<main class="flex-1 mt-16 p-xl overflow-y-auto w-full">
+<div class="max-w-5xl mx-auto">
+<div class="mb-sm flex justify-between items-end">
+<div>
+<h2 class="font-headline-md text-headline-md text-on-surface tracking-tight">All Tasks Organized</h2>
+<p class="font-body-base text-body-base text-on-surface-variant mt-xs">Prioritized by urgency and cross-team dependencies.</p>
+</div>
+<div class="flex gap-sm">
+<button class="font-label-caps text-label-caps px-sm py-xs border border-[#2e3036] rounded-DEFAULT text-on-surface-variant hover:text-on-surface hover:bg-[#121214] transition-all">FILTER</button>
+<button class="font-label-caps text-label-caps px-sm py-xs border border-[#2e3036] rounded-DEFAULT text-on-surface-variant hover:text-on-surface hover:bg-[#121214] transition-all">SORT: URGENCY</button>
+</div>
+</div>
+<!-- Filter Pills -->
+<div class="flex items-center gap-sm mb-lg overflow-x-auto pb-sm">
+<button class="px-md py-1.5 rounded-full text-[13px] font-body-bold bg-primary-container text-on-primary-container transition-all shadow-sm">
+                        All Tasks
+                    </button>
+<button class="px-md py-1.5 rounded-full text-[13px] font-body-bold border border-[#2e3036] text-on-surface-variant hover:text-on-surface hover:border-[#4a4455] hover:bg-[#121214] transition-all">
+                        Critical
+                    </button>
+<button class="px-md py-1.5 rounded-full text-[13px] font-body-bold border border-[#2e3036] text-on-surface-variant hover:text-on-surface hover:border-[#4a4455] hover:bg-[#121214] transition-all">
+                        High
+                    </button>
+<button class="px-md py-1.5 rounded-full text-[13px] font-body-bold border border-[#2e3036] text-on-surface-variant hover:text-on-surface hover:border-[#4a4455] hover:bg-[#121214] transition-all">
+                        In Progress
+                    </button>
+<button class="px-md py-1.5 rounded-full text-[13px] font-body-bold border border-[#2e3036] text-on-surface-variant hover:text-on-surface hover:border-[#4a4455] hover:bg-[#121214] transition-all">
+                        Work
+                    </button>
+<button class="px-md py-1.5 rounded-full text-[13px] font-body-bold border border-[#2e3036] text-on-surface-variant hover:text-on-surface hover:border-[#4a4455] hover:bg-[#121214] transition-all">
+                        Personal
+                    </button>
+</div>
+<!-- Group 1 -->
+<div class="mb-xl">
+<div class="flex items-center gap-sm mb-sm px-sm">
+<span class="w-2 h-2 rounded-full bg-[#4edea3]"></span>
+<h3 class="font-body-bold text-[13px] text-on-surface tracking-wide">Product Team Invoice Payouts</h3>
+<span class="font-label-caps text-[10px] text-on-surface-variant bg-[#1f2024] px-xs rounded-sm">3 TASKS</span>
+</div>
+<div class="border border-[#1f2024] rounded-lg overflow-hidden layer-surface">
+<!-- Critical Task -->
+<div class="task-row flex items-center justify-between p-sm border-b border-[#1f2024] imp-5 bg-[#121214]/50 relative overflow-hidden group cursor-pointer" onclick="toggleModal()">
+<div class="absolute inset-0 bg-gradient-to-r from-primary-container/5 to-transparent pointer-events-none"></div>
+<div class="flex items-center gap-md z-10 flex-1">
+<div class="w-8 flex justify-center">
+<div class="relative pulse-dot">
+<div class="w-2 h-2 rounded-full bg-primary-container"></div>
+</div>
+</div>
+<div class="flex flex-col">
+<div class="flex items-center gap-sm">
+<span class="font-body-bold text-[13px] text-on-surface">Process pending Mastercard and Visa invoices</span>
+<span class="font-label-caps text-[9px] text-primary-container border border-primary-container/30 px-[4px] rounded-sm bg-primary-container/10">IMP 5</span>
+</div>
+<div class="flex items-center gap-md mt-xs">
+<span class="font-label-caps text-[10px] text-on-surface-variant flex items-center gap-[2px]">
+<span class="material-symbols-outlined text-[12px]">schedule</span> 2h ago
+                                        </span>
+<div class="flex items-center gap-[2px] font-label-caps text-[10px] text-on-surface-variant">
+<span class="w-[40px] h-[4px] bg-[#2e3036] rounded-full overflow-hidden">
+<div class="h-full bg-primary-container w-[70%]"></div>
+</span>
+<span class="ml-1">70%</span>
+</div>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-md z-10">
+<div class="flex items-center gap-xs font-label-caps text-[10px] text-[#ccc3d8] bg-[#201f22] px-sm py-[2px] rounded-full border border-[#2e3036]">
+<span class="w-1.5 h-1.5 rounded-full bg-[#f59e0b]"></span> Pending Auth
+                                </div>
+<div class="flex items-center gap-[2px] text-on-surface-variant">
+<span class="material-symbols-outlined text-[14px]">chat_bubble</span>
+<span class="font-label-caps text-[10px]">12</span>
+</div>
+<div class="w-6 h-6 rounded-full bg-[#353437] border border-[#4a4455] flex items-center justify-center font-label-caps text-[10px] text-on-surface">JD</div>
+<button class="deep-dive-btn bg-[#2e3036] hover:bg-[#4a4455] text-on-surface font-label-caps text-[10px] px-sm py-xs rounded-sm transition-colors border border-[#4a4455]">
+                                    DEEP DIVE
+                                </button>
+</div>
+</div>
+<!-- Standard Task -->
+<div class="task-row flex items-center justify-between p-sm border-b border-[#1f2024] cursor-pointer">
+<div class="flex items-center gap-md flex-1">
+<div class="w-8 flex justify-center text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px]">check_circle</span>
+</div>
+<div class="flex flex-col">
+<div class="flex items-center gap-sm">
+<span class="font-body-base text-[13px] text-on-surface">Reconcile Q2 vendor payments</span>
+<span class="font-label-caps text-[9px] text-on-surface-variant border border-[#2e3036] px-[4px] rounded-sm bg-[#1f2024]">IMP 3</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<div class="flex items-center gap-xs font-label-caps text-[10px] text-[#ccc3d8] bg-[#201f22] px-sm py-[2px] rounded-full border border-[#2e3036]">
+<span class="w-1.5 h-1.5 rounded-full bg-[#4edea3]"></span> In Progress
+                                </div>
+<div class="flex items-center gap-[2px] text-on-surface-variant">
+<span class="material-symbols-outlined text-[14px]">chat_bubble</span>
+<span class="font-label-caps text-[10px]">4</span>
+</div>
+<div class="w-6 h-6 rounded-full bg-[#353437] border border-[#4a4455] flex items-center justify-center font-label-caps text-[10px] text-on-surface">AK</div>
+<button class="deep-dive-btn bg-[#2e3036] text-on-surface font-label-caps text-[10px] px-sm py-xs rounded-sm border border-[#4a4455]">
+                                    DEEP DIVE
+                                </button>
+</div>
+</div>
+<!-- Standard Task -->
+<div class="task-row flex items-center justify-between p-sm cursor-pointer">
+<div class="flex items-center gap-md flex-1">
+<div class="w-8 flex justify-center text-[#4a4455]">
+<span class="material-symbols-outlined text-[16px]">radio_button_unchecked</span>
+</div>
+<div class="flex flex-col">
+<div class="flex items-center gap-sm">
+<span class="font-body-base text-[13px] text-[#958da1]">Update payment gateway credentials</span>
+<span class="font-label-caps text-[9px] text-[#958da1] border border-[#2e3036] px-[4px] rounded-sm bg-[#1f2024]">IMP 2</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<div class="flex items-center gap-xs font-label-caps text-[10px] text-[#958da1] bg-[#121214] px-sm py-[2px] rounded-full border border-[#1f2024]">
+                                     Backlog
+                                </div>
+<div class="w-6 h-6 rounded-full bg-[#1c1b1d] border border-[#2e3036] flex items-center justify-center font-label-caps text-[10px] text-[#958da1] border-dashed">--</div>
+<button class="deep-dive-btn bg-[#1c1b1d] text-[#958da1] font-label-caps text-[10px] px-sm py-xs rounded-sm border border-[#2e3036]">
+                                    OPEN
+                                </button>
+</div>
+</div>
+</div>
+</div>
+<!-- Group 2 -->
+<div class="mb-xl">
+<div class="flex items-center gap-sm mb-sm px-sm">
+<span class="w-2 h-2 rounded-full bg-[#c0c1ff]"></span>
+<h3 class="font-body-bold text-[13px] text-on-surface tracking-wide">Comms way of working</h3>
+<span class="font-label-caps text-[10px] text-on-surface-variant bg-[#1f2024] px-xs rounded-sm">2 TASKS</span>
+</div>
+<div class="border border-[#1f2024] rounded-lg overflow-hidden layer-surface">
+<!-- Standard Task -->
+<div class="task-row flex items-center justify-between p-sm border-b border-[#1f2024] cursor-pointer">
+<div class="flex items-center gap-md flex-1">
+<div class="w-8 flex justify-center text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px]">check_circle</span>
+</div>
+<div class="flex flex-col">
+<div class="flex items-center gap-sm">
+<span class="font-body-base text-[13px] text-on-surface">Finalize June communications budget plan</span>
+<span class="font-label-caps text-[9px] text-[#ffb4ab] border border-[#ffb4ab]/30 px-[4px] rounded-sm bg-[#93000a]/20">IMP 4</span>
+</div>
+<div class="flex items-center gap-md mt-xs">
+<span class="font-label-caps text-[10px] text-[#ffb4ab] flex items-center gap-[2px]">
+<span class="material-symbols-outlined text-[12px]">warning</span> Overdue
+                                        </span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<div class="flex items-center gap-xs font-label-caps text-[10px] text-[#ccc3d8] bg-[#201f22] px-sm py-[2px] rounded-full border border-[#2e3036]">
+<span class="w-1.5 h-1.5 rounded-full bg-[#3b82f6]"></span> Review
+                                </div>
+<div class="flex items-center gap-[2px] text-on-surface-variant">
+<span class="material-symbols-outlined text-[14px]">chat_bubble</span>
+<span class="font-label-caps text-[10px]">8</span>
+</div>
+<div class="flex -space-x-2">
+<div class="w-6 h-6 rounded-full bg-[#353437] border border-[#4a4455] flex items-center justify-center font-label-caps text-[10px] text-on-surface z-10">MR</div>
+<div class="w-6 h-6 rounded-full bg-[#4a4455] border border-[#4a4455] flex items-center justify-center font-label-caps text-[10px] text-on-surface z-0">TB</div>
+</div>
+<button class="deep-dive-btn bg-[#2e3036] text-on-surface font-label-caps text-[10px] px-sm py-xs rounded-sm border border-[#4a4455]">
+                                    DEEP DIVE
+                                </button>
+</div>
+</div>
+<!-- Standard Task -->
+<div class="task-row flex items-center justify-between p-sm cursor-pointer">
+<div class="flex items-center gap-md flex-1">
+<div class="w-8 flex justify-center text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px]">check_circle</span>
+</div>
+<div class="flex flex-col">
+<div class="flex items-center gap-sm">
+<span class="font-body-base text-[13px] text-on-surface">Draft updated PR guidelines</span>
+<span class="font-label-caps text-[9px] text-on-surface-variant border border-[#2e3036] px-[4px] rounded-sm bg-[#1f2024]">IMP 2</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<div class="flex items-center gap-xs font-label-caps text-[10px] text-[#ccc3d8] bg-[#201f22] px-sm py-[2px] rounded-full border border-[#2e3036]">
+<span class="w-1.5 h-1.5 rounded-full bg-[#4edea3]"></span> In Progress
+                                </div>
+<div class="w-6 h-6 rounded-full bg-[#353437] border border-[#4a4455] flex items-center justify-center font-label-caps text-[10px] text-on-surface">TB</div>
+<button class="deep-dive-btn bg-[#2e3036] text-on-surface font-label-caps text-[10px] px-sm py-xs rounded-sm border border-[#4a4455]">
+                                    DEEP DIVE
+                                </button>
+</div>
+</div>
+</div>
+</div>
+<!-- Group 3 -->
+<div class="mb-xl">
+<div class="flex items-center gap-sm mb-sm px-sm">
+<span class="w-2 h-2 rounded-full bg-[#7c3aed]"></span>
+<h3 class="font-body-bold text-[13px] text-on-surface tracking-wide">Bio auth &lt;&gt; edu</h3>
+<span class="font-label-caps text-[10px] text-on-surface-variant bg-[#1f2024] px-xs rounded-sm">2 TASKS</span>
+</div>
+<div class="border border-[#1f2024] rounded-lg overflow-hidden layer-surface opacity-60 hover:opacity-100 transition-opacity">
+<div class="p-sm text-center font-label-caps text-[10px] text-on-surface-variant">
+                             All tasks complete or archived.
+                         </div>
+</div>
+</div>
+</div>
+</main>
+</div>
+<!-- Modal Overlay -->
+<div class="fixed inset-0 z-50 flex items-center justify-center hidden" id="taskModal"><!-- Backdrop -->
+<div class="absolute inset-0 bg-[#09090b]/90 backdrop-blur-sm" onclick="toggleModal()"></div>
+<!-- Modal Content -->
+<div class="relative w-[720px] max-h-[85vh] bg-[#121214] border border-[#1f2024] rounded-xl shadow-2xl flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+<!-- Header -->
+<div class="flex items-center justify-between p-lg border-b border-[#1f2024] bg-[#121214]/50 backdrop-blur-xl">
+<div class="flex items-center gap-md">
+<div class="relative pulse-dot">
+<div class="w-2.5 h-2.5 rounded-full bg-primary-container"></div>
+</div>
+<div class="flex flex-col">
+<div class="flex items-center gap-sm">
+<span class="font-label-caps text-[10px] text-primary-container border border-primary-container/30 px-[6px] py-[2px] rounded-sm bg-primary-container/10">IMP 5</span>
+<div class="flex items-center gap-xs font-label-caps text-[10px] text-[#ccc3d8] bg-[#201f22] px-sm py-[2px] rounded-full border border-[#2e3036]">
+<span class="w-1.5 h-1.5 rounded-full bg-[#f59e0b]"></span> Pending Auth
+                    </div>
+</div>
+</div>
+</div>
+<button class="p-xs text-on-surface-variant hover:text-on-surface hover:bg-[#2e3036] rounded-full transition-colors" onclick="toggleModal()">
+<span class="material-symbols-outlined text-[20px]">close</span>
+</button>
+</div>
+<!-- Scrollable Body -->
+<div class="flex-1 overflow-y-auto p-lg space-y-xl">
+<!-- Overview Section -->
+<section>
+<h2 class="font-headline-md text-[22px] text-on-surface tracking-tight mb-xs">Process pending Mastercard and Visa invoices</h2>
+<p class="font-body-base text-[14px] text-on-surface-variant leading-relaxed">
+                The Q2 invoices from Mastercard and Visa have been received but require manual reconciliation against the internal ledger before authorization.
+            </p>
+</section>
+<!-- Wiki / Deep-Dive Section -->
+<section class="bg-[#09090b] border border-[#1f2024] rounded-lg p-md">
+<div class="flex items-center gap-xs mb-md">
+<span class="material-symbols-outlined text-[16px] text-primary-container">auto_awesome</span>
+<span class="font-label-caps text-[11px] text-on-surface tracking-widest">WIKI (DEEP-DIVE)</span>
+</div>
+<div class="prose prose-invert prose-sm max-w-none font-['Geist'] text-[#ccc3d8] space-y-sm">
+<p>Discrepancies noted in the API usage tiers for the month of May. Cross-referencing applied discount rates against the 2024 Master Service Agreement (MSA) is required.</p>
+<ul class="list-none p-0 space-y-xs">
+<li class="flex items-center gap-sm"><span class="material-symbols-outlined text-[14px] text-[#4edea3]">check_circle</span> Verify API call counts for May</li>
+<li class="flex items-center gap-sm"><span class="material-symbols-outlined text-[14px] text-on-surface-variant">radio_button_unchecked</span> Cross-reference applied discount rates</li>
+<li class="flex items-center gap-sm"><span class="material-symbols-outlined text-[14px] text-on-surface-variant">radio_button_unchecked</span> Secure VP Finance sign-off</li>
+</ul>
+</div>
+</section>
+<div class="grid grid-cols-2 gap-xl">
+<!-- People Section -->
+<section>
+<span class="font-label-caps text-[10px] text-on-surface-variant block mb-md">PEOPLE &amp; STAKEHOLDERS</span>
+<div class="space-y-sm">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-sm">
+<div class="w-6 h-6 rounded-full bg-[#353437] border border-[#4a4455] flex items-center justify-center font-label-caps text-[9px]">JD</div>
+<span class="text-[13px] text-on-surface">Jane Doe</span>
+</div>
+<span class="text-[11px] text-on-surface-variant">Assignee</span>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-sm">
+<div class="w-6 h-6 rounded-full bg-[#4a4455] border border-[#4a4455] flex items-center justify-center font-label-caps text-[9px]">AK</div>
+<span class="text-[13px] text-on-surface">Alex K.</span>
+</div>
+<span class="text-[11px] text-on-surface-variant">Stakeholder</span>
+</div>
+</div>
+</section>
+<!-- Timeline Section -->
+<section>
+<span class="font-label-caps text-[10px] text-on-surface-variant block mb-md">TIMELINE</span>
+<div class="relative pl-4 border-l border-[#1f2024] space-y-md">
+<div class="relative">
+<div class="absolute -left-[21px] top-1 w-2.5 h-2.5 rounded-full bg-primary-container border-2 border-[#121214]"></div>
+<span class="text-[11px] text-on-surface-variant block">Today, 09:15</span>
+<span class="text-[12px] text-on-surface">Reconciliation started</span>
+</div>
+<div class="relative">
+<div class="absolute -left-[21px] top-1 w-2.5 h-2.5 rounded-full bg-[#2e3036] border-2 border-[#121214]"></div>
+<span class="text-[11px] text-on-surface-variant block">Yesterday, 14:30</span>
+<span class="text-[12px] text-on-surface">Task imported from WhatsApp</span>
+</div>
+</div>
+</section>
+</div>
+<!-- Evidence Trail Section -->
+<section>
+<div class="flex items-center justify-between mb-md">
+<span class="font-label-caps text-[10px] text-on-surface-variant">EVIDENCE TRAIL (WHATSAPP)</span>
+<span class="text-[10px] text-primary-container flex items-center gap-xs"><span class="material-symbols-outlined text-[12px]">verified</span> 98% Relevance</span>
+</div>
+<div class="space-y-sm max-h-40 overflow-y-auto pr-sm">
+<div class="bg-[#1f2024] border border-[#2e3036] rounded-lg p-sm">
+<div class="flex justify-between mb-xs">
+<span class="font-label-caps text-[9px] text-on-surface-variant">ALEX K. • 15:45</span>
+</div>
+<p class="text-[12px] text-[#e5e1e4]">Hey Jane, I dropped the latest MC invoice in the shared folder. The tiering looks off compared to last month.</p>
+</div>
+<div class="bg-primary-container/10 border border-primary-container/20 rounded-lg p-sm">
+<div class="flex justify-between mb-xs">
+<span class="font-label-caps text-[9px] text-primary-container">YOU • 16:10</span>
+</div>
+<p class="text-[12px] text-primary-fixed">Checking it now. I'll flag it for authorization once I cross-reference the contract.</p>
+</div>
+</div>
+</section>
+</div>
+<!-- Footer Actions -->
+<div class="p-lg border-t border-[#1f2024] bg-[#121214] flex items-center justify-end gap-md">
+<button class="px-md py-xs text-[12px] font-body-bold text-on-surface-variant hover:text-on-surface transition-colors">Archive</button>
+<button class="px-md py-xs text-[12px] font-body-bold border border-[#2e3036] rounded-DEFAULT text-on-surface hover:bg-[#1f2024] transition-all">Run Deep Dive</button>
+<button class="px-md py-xs text-[12px] font-body-bold bg-primary-container text-on-primary-container rounded-DEFAULT border border-white/10 hover:scale-98 transition-transform">Mark Complete</button>
+</div>
+</div></div>
+<script>
+        function toggleModal() {
+            const modal = document.getElementById('taskModal');
+            modal.classList.toggle('hidden');
+        }
+    </script>
+</body></html>

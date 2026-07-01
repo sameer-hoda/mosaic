@@ -1,0 +1,64 @@
+# ── Secrets & API keys ──────────────────────────────────────────────
+.env
+*.pem
+*_credentials*
+*credential*
+
+# ── Databases (WhatsApp session, messages, application data) ─────────
+*.db
+*.db-shm
+*.db-wal
+
+# ── WhatsApp bridge binaries (pre-built, platform-specific) ──────────
+whatsapp-mcp/whatsapp-bridge/wa-bridge*
+whatsapp-mcp/whatsapp-bridge/server
+whatsapp-mcp/whatsapp-bridge/whatsapp-bridge
+
+# ── WhatsApp session store ───────────────────────────────────────────
+store/
+whatsapp-mcp/whatsapp-bridge/store/
+
+# ── Dependencies ─────────────────────────────────────────────────────
+node_modules/
+taskdog-backend/venv/
+venv/
+
+# ── Build artifacts & caches ──────────────────────────────────────────
+__pycache__/
+*.pyc
+*.pyo
+dist/
+build/
+*.egg-info/
+
+# ── OS files ──────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+
+# ── Logs ──────────────────────────────────────────────────────────────
+*.log
+*.log.*
+
+# ── IDE / Editor ──────────────────────────────────────────────────────
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# ── Runtime PIDs ──────────────────────────────────────────────────────
+.taskdog_pids
+*.pid
+
+# ── Archives & secrets directories (explicit exclusions) ──────────────
+_secrets/
+_archive*/
+*_archive*/
+
+# ── OpenCode / agent config (local-only) ──────────────────────────────
+.opencode/
+opencode.json
+
+# ── Backups ───────────────────────────────────────────────────────────
+*.bak
+*.backup

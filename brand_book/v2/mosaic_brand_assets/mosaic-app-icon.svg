@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-labelledby="title desc">
+<title id="title">Mosaic app icon</title>
+<desc id="desc">Purple rounded-square app icon with a white Mosaic M tile mark.</desc>
+<defs>
+  <linearGradient id="bg" x1="32" y1="24" x2="224" y2="232" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#8B5CF6"/>
+    <stop offset="1" stop-color="#5B21FF"/>
+  </linearGradient>
+  <filter id="iconShadow" x="-20%" y="-20%" width="140%" height="140%">
+    <feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#15163A" flood-opacity="0.16"/>
+  </filter>
+</defs>
+<rect x="20" y="20" width="216" height="216" rx="48" fill="url(#bg)" filter="url(#iconShadow)"/>
+<g transform="translate(45 47) scale(1.3)" stroke="#5B21FF" stroke-width="6" stroke-linejoin="round">
+  <rect x="18" y="54" width="30" height="60" rx="10" fill="#FFFFFF"/>
+  <rect x="22" y="21" width="38" height="38" rx="10" fill="#FFFFFF" transform="rotate(-45 41 40)"/>
+  <rect x="49" y="51" width="30" height="30" rx="8" fill="#FFFFFF" transform="rotate(45 64 66)"/>
+  <rect x="72" y="24" width="38" height="34" rx="10" fill="#FFFFFF"/>
+  <rect x="82" y="60" width="32" height="54" rx="10" fill="#FFFFFF"/>
+</g>
+</svg>

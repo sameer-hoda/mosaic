@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-labelledby="title desc">
+<title id="title">Mosaic logo mark</title>
+<desc id="desc">A geometric letter M built from rounded mosaic tiles.</desc>
+
+<defs>
+  <linearGradient id="mosaicGradient" x1="18" y1="18" x2="112" y2="116" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#8B5CF6"/>
+    <stop offset="1" stop-color="#5B21FF"/>
+  </linearGradient>
+  <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
+    <feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#5B21FF" flood-opacity="0.18"/>
+  </filter>
+</defs>
+
+
+<g stroke="#FFFFFF" stroke-width="6" stroke-linejoin="round">
+  <rect x="18" y="54" width="30" height="60" rx="10" fill="url(#mosaicGradient)"/>
+  <rect x="22" y="21" width="38" height="38" rx="10" fill="url(#mosaicGradient)" transform="rotate(-45 41 40)"/>
+  <rect x="49" y="51" width="30" height="30" rx="8" fill="url(#mosaicGradient)" transform="rotate(45 64 66)"/>
+  <rect x="72" y="24" width="38" height="34" rx="10" fill="url(#mosaicGradient)"/>
+  <rect x="82" y="60" width="32" height="54" rx="10" fill="url(#mosaicGradient)"/>
+</g>
+</svg>
