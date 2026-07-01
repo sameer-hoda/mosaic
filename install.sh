@@ -85,14 +85,24 @@ check_tool python3
 
 # ── Find the best Python (prefer versioned Homebrew installs) ────────
 BEST_PYTHON=""
-for candidate in python3.12 python3.13 python3.11 python3.10 python3; do
-  if command -v "$candidate" &>/dev/null; then
+# Homebrew installs versioned Python at these paths (check directly, not just PATH)
+for candidate in \
+  /opt/homebrew/bin/python3.12 \
+  /opt/homebrew/bin/python3.13 \
+  /opt/homebrew/bin/python3.11 \
+  /opt/homebrew/bin/python3.10 \
+  /usr/local/bin/python3.12 \
+  /usr/local/bin/python3.13 \
+  /usr/local/bin/python3.11 \
+  /usr/local/bin/python3.10 \
+  python3.12 python3.13 python3.11 python3.10 python3; do
+  if [ -x "$candidate" ] && "$candidate" --version &>/dev/null; then
     candidate_ver=$("$candidate" -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")')
     candidate_major=$(echo "$candidate_ver" | cut -d. -f1)
     candidate_minor=$(echo "$candidate_ver" | cut -d. -f2)
     if [ "$candidate_major" -gt 3 ] || ([ "$candidate_major" -eq 3 ] && [ "$candidate_minor" -ge 10 ]); then
       BEST_PYTHON="$candidate"
-      info "Found Python $candidate_ver → using $candidate"
+      info "Found Python $candidate_ver at $candidate"
       break
     fi
   fi
