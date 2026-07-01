@@ -1,5 +1,11 @@
-<h1 align="center">🐶 TaskDog</h1>
-<p align="center"><strong>Your WhatsApp → AI Task Intelligence Pipeline</strong></p>
+<p align="center">
+  <img src="brand_book/v2/mosaic_brand_assets/mosaic-logo-final.svg" alt="Mosaic" width="320" />
+</p>
+
+<p align="center">
+  <strong>Your life, pieced together.</strong><br>
+  <sub>Mosaic turns scattered WhatsApp conversations into a clear picture of commitments, decisions, blockers, and next steps.</sub>
+</p>
 
 <p align="center">
   <img src="https://img.shields.io/badge/python-3.10+-blue" alt="Python" />
@@ -8,37 +14,35 @@
   <img src="https://img.shields.io/badge/license-MIT-green" alt="License" />
 </p>
 
-<p align="center">
-  TaskDog watches your WhatsApp groups and DMs, uses <strong>Gemini</strong> to discover tasks, keeps them updated as conversations evolve, and builds rich knowledge pages — all in a sleek web dashboard. No more "who said what?" rabbit holes.
-</p>
-
 ---
+
+Mosaic is the invisible organizer for your WhatsApp life. It reads your chats with care, finds what matters — commitments, decisions, blockers, follow-ups — and assembles them into an organized picture. No manual task creation. No new apps to learn. Your chats already know. Mosaic helps you see.
 
 ## ✨ What It Does
 
-- **Discovers tasks** from 30 days of WhatsApp messages using Gemini  
-- **Refreshes incrementally** — new messages are folded into existing tasks, no duplicates  
-- **Deep-dives** any task into a full wiki page with people, timeline, blockers, and decisions  
-- **Dashboard** with importance-ranked cards, one-click status toggling, and filter-by-priority  
-- **QR pairing** — scan a QR code to link your WhatsApp, no terminal fiddling  
-- **Incremental updates** — refresh only picks up new messages since your last scan  
-- **Zero-cron architecture** — every pipeline stage is triggered manually from the UI  
+- **Surfaces commitments** — "I'll send this by Friday" becomes a trackable item
+- **Catches decisions** — captures what was agreed in group threads before they scroll away
+- **Flags blockers** — surfaces things waiting on someone else before they fall through
+- **Keeps context** — every item stays linked to the original conversation, people, and timeline
+- **Refreshes incrementally** — new messages are folded into existing items, no duplicates
+- **Deep-dives** any conversation thread into a rich knowledge page
+- **QR pairing** — scan a QR code to link WhatsApp, no terminal fiddling
 
 ## 🏗 Architecture
 
 ```
-  Your Phone                    Local Machine                        Your Browser
-  ─────────                    ─────────────                        ────────────
+  Your Phone                    Local Machine                     Your Browser
+  ─────────                    ─────────────                     ────────────
   WhatsApp ──────► wa-bridge ──────► Flask API ──────► Vite + React
                    (Go, :8080)       (Python, :3001)     (:5173)
                                          │
                               ┌──────────┴──────────┐
-                          taskdog.db (v1)    taskdog_v2.db (v2)
+                          mosaic.db (v1)      mosaic_v2.db (v2)
 ```
 
-- **`wa-bridge`** — Go binary using `whatsmeow` to talk to WhatsApp. Exposes HTTP endpoints for reading chats, messages, and sending.  
-- **Flask backend** — Python REST API. v1 routes handle chat reads and bridge status; v2 routes handle the task pipeline.  
-- **Vite frontend** — React shell with a 3-gate onboarding flow (API key → QR scan → group whitelist → dashboard).  
+- **`wa-bridge`** — Go binary using `whatsmeow` to talk to WhatsApp. Exposes HTTP endpoints for reading chats, messages, and sending.
+- **Flask backend** — Python REST API. v1 routes handle chat reads and bridge status; v2 routes handle the intelligence pipeline.
+- **Vite frontend** — React shell with a 3-gate onboarding flow: API key → QR scan → group selection → dashboard.
 
 ## 🚀 Quick Start
 
@@ -55,8 +59,8 @@
 ### 1. Clone & install
 
 ```bash
-git clone https://github.com/sameer-hoda/taskdog.git
-cd taskdog
+git clone https://github.com/sameer-hoda/mosaic.git
+cd mosaic
 ```
 
 ### 2. Set your Gemini key
@@ -100,7 +104,7 @@ bash scripts/start.sh
 Open **http://localhost:5173** — the onboarding flow will guide you through:
 1. Paste your Gemini key
 2. Scan the QR code with WhatsApp
-3. Pick which groups/DMs to track
+3. Pick which groups and DMs to include
 
 ### Manual start (3 terminals)
 
@@ -110,20 +114,20 @@ Open **http://localhost:5173** — the onboarding flow will guide you through:
 | 2 | Flask API | `3001` | `cd taskdog-backend && venv/bin/python app.py` |
 | 3 | Vite dev | `5173` | `cd taskdog-frontend && npm run dev` |
 
-## ⚙️ Pipeline
+## ⚙️ Intelligence Pipeline
 
-Every stage is triggered manually from the dashboard. No scheduled jobs, no cron.
+Every stage is triggered manually from the dashboard. No scheduled jobs, no automatic API spend.
 
 | Stage | Trigger | What happens |
 |---|---|---|
-| **Discover** | Click "Discover" | Scans last 30 days of messages per group. Gemini extracts all tasks. |
-| **Refresh** | Click "Refresh" | Incremental update — only new messages since last scan. Tasks updated in-place. |
-| **Deep-dive** | Click a task card | Full transcript → Gemini → wiki page + people + timeline + blockers + decisions. |
+| **Discover** | Click "Discover" | Scans last 30 days of messages per group. Gemini finds all commitments, decisions, blockers. |
+| **Refresh** | Click "Refresh" | Incremental update — only new messages since last scan. Items updated in-place. |
+| **Deep-dive** | Click a card | Full transcript → Gemini → rich knowledge page with people, timeline, blockers, decisions. |
 | **Dashboard** | Always live | Pure DB read, sorted by importance. No Gemini calls — fast. |
 
 ## 📡 API Reference
 
-### v2 Task Pipeline
+### v2 Intelligence Endpoints
 
 | Method | Endpoint |
 |---|---|
@@ -145,11 +149,10 @@ Every stage is triggered manually from the dashboard. No scheduled jobs, no cron
 
 | Method | Endpoint | Used by |
 |---|---|---|
-| `GET` | `/api/bridge/status` | Onboarding → checks if WhatsApp is connected |
-| `GET` | `/api/bridge/qr` | Onboarding → renders QR code for pairing |
-| `POST` | `/api/chats/classify` | Onboarding → lists chats with AI category + TLDR |
-| `POST` | `/api/chats/classify/stream` | Onboarding → streaming variant |
-| `POST` | `/api/send` | Dashboard → send a nudge to a WhatsApp contact |
+| `GET` | `/api/bridge/status` | Onboarding — checks if WhatsApp is connected |
+| `GET` | `/api/bridge/qr` | Onboarding — renders QR code for pairing |
+| `POST` | `/api/chats/classify` | Onboarding — lists chats with AI category + TLDR |
+| `POST` | `/api/chats/classify/stream` | Onboarding — streaming variant |
 
 ## 🔧 Management
 
@@ -168,10 +171,10 @@ bash scripts/reset_first_time.sh --keep-all      # Wipe only task data, keep con
 ```bash
 cd taskdog-backend
 
-# v2 integration tests (30 tests — DB CRUD, routes, pipeline with mocked Gemini)
+# v2 integration tests (30 tests)
 DATABASE_PATH_V2=$(mktemp) DATABASE_PATH=$(mktemp) venv/bin/python -m unittest tests.test_v2 -v
 
-# Onboarding tests (67 tests — full first-time-user journey)
+# Onboarding tests (67 tests)
 DATABASE_PATH_V2=$(mktemp) DATABASE_PATH=$(mktemp) venv/bin/python -m unittest tests.test_onboarding -v
 
 # All backend tests (97 total)
@@ -197,12 +200,13 @@ cd ../taskdog-frontend && npx vite build
 │   ├── src/
 │   │   ├── app.js            # Phase router (apikey → pairing → whitelist → dashboard)
 │   │   ├── api.js            # API client with SSE streaming
-│   │   └── components/       # ApiKey.js, Pairing.js, Whitelist.js, Dashboard.js, DeepDive.js, Header.js
+│   │   └── components/       # UI components for each step
 │   └── package.json
 │
 ├── whatsapp-mcp/             # WhatsApp bridge (Go) + MCP server (Python)
 │   └── whatsapp-bridge/      # Go source: main.go, go.mod, go.sum
 │
+├── brand_book/               # Mosaic brand assets, logos, brand guide
 ├── scripts/                  # start.sh, stop.sh, reset_first_time.sh
 ├── v2_spec/                  # Architecture docs, API contracts, runbook
 ├── deployment/               # Electron wrapper for desktop distribution
@@ -211,10 +215,16 @@ cd ../taskdog-frontend && npx vite build
 
 ## 🔒 Security
 
-- Your Gemini API key stays in a local `.env` file (gitignored)  
-- WhatsApp session data (`.db` files) is gitignored — never leaves your machine  
-- The bridge runs on `localhost` only — nothing is exposed to the internet  
-- All pipeline stages are manually triggered — no automated API spend  
+- Your Gemini API key stays in a local `.env` file (gitignored)
+- WhatsApp session data (`.db` files) is gitignored — never leaves your machine
+- The bridge runs on `localhost` only — nothing is exposed to the internet
+- All intelligence stages are manually triggered — no automated API spend
+
+## Brand
+
+Mosaic's visual identity is built around the **tile** — each message, commitment, and decision is a piece that Mosaic assembles into a clear picture. Colors are calm and composed: violet (`#5B21FF`) for focus, ink (`#15163A`) for clarity, and neutral whitespace for breathing room. See the full [Brand Book](brand_book/v2/mosaic_brand_assets/MOSAIC_BRAND_BOOK.md).
+
+> **Mosaic is the invisible organizer for your WhatsApp life.** From conversation to clarity. Your life, pieced together.
 
 ## 📄 License
 
