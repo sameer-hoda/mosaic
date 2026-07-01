@@ -44,67 +44,34 @@ Mosaic is the invisible organizer for your WhatsApp life. It reads your chats wi
 - **Flask backend** — Python REST API. v1 routes handle chat reads and bridge status; v2 routes handle the intelligence pipeline.
 - **Vite frontend** — React shell with a 3-gate onboarding flow: API key → QR scan → group selection → dashboard.
 
-## 🚀 Quick Start
-
-### Prerequisites
-
-| Tool | Why |
-|---|---|
-| **Go 1.21+** | Build the WhatsApp bridge from source |
-| **Python 3.10+** | Run the Flask backend |
-| **Node.js 18+** | Run the Vite frontend |
-| **Gemini API key** | [Get one free](https://aistudio.google.com/apikey) |
-| **WhatsApp account** | Scan a QR code to pair |
-
-### 1. Clone & install
+## 🚀 Quick Start (one command)
 
 ```bash
-git clone https://github.com/sameer-hoda/mosaic.git
-cd mosaic
+curl -fsSL https://raw.githubusercontent.com/sameer-hoda/mosaic/main/install.sh | bash
 ```
 
-### 2. Set your Gemini key
+That's it. The installer will:
+1. **Clone** the repo (if needed)
+2. **Check** prerequisites and tell you how to install what's missing
+3. **Install** all dependencies (Python venv, pip packages, npm, Go bridge)
+4. **Setup** your `.env` file and prompt you for a Gemini key
+5. **Start** all 3 services and open the dashboard
 
-```bash
-cp .env.example taskdog-backend/.env
-```
+### Prerequisites (one-time)
 
-Open `taskdog-backend/.env` and replace the placeholder:
+| Tool | Why | Install |
+|---|---|---|
+| **python3** (3.10+) | Flask backend | `brew install python@3.12` or `apt install python3 python3-venv` |
+| **node + npm** (18+) | Vite frontend | `brew install node` or [nodejs.org](https://nodejs.org) |
+| **go** (1.21+) | WhatsApp bridge | `brew install go` or `apt install golang-go` |
+| **Gemini API key** | AI intelligence | [Get one free](https://aistudio.google.com/apikey) |
 
-```env
-GEMINI_API_KEY=your-actual-gemini-key-here
-DATABASE_PATH=taskdog.db
-DATABASE_PATH_V2=taskdog_v2.db
-```
+After the installer finishes, open **http://localhost:5173** and follow the 3-step onboarding:
+1. **API Key** — paste your Gemini key
+2. **QR Scan** — scan the QR code with WhatsApp to pair
+3. **Group Selection** — pick which groups and DMs to include
 
-### 3. Install dependencies
-
-```bash
-# Python backend
-cd taskdog-backend
-python3 -m venv venv
-venv/bin/pip install -r requirements.txt
-
-# Frontend
-cd ../taskdog-frontend
-npm install
-
-# Go bridge
-cd ../whatsapp-mcp/whatsapp-bridge
-go build -o wa-bridge .
-```
-
-### 4. Start everything
-
-```bash
-cd ../..
-bash scripts/start.sh
-```
-
-Open **http://localhost:5173** — the onboarding flow will guide you through:
-1. Paste your Gemini key
-2. Scan the QR code with WhatsApp
-3. Pick which groups and DMs to include
+Then click **Discover** on the dashboard to scan your chats.
 
 ### Manual start (3 terminals)
 
